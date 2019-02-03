@@ -7,82 +7,93 @@ using namespace std;
 #define ALTURA   500		/* Heigth */
 
 //globais
-int iX = 0, iY = 0;
+int tX = 0, tY = 0;    //translação
+float sX = 1.0, sY = 1.0;   //Escala
+int rX = 0, rY = 0;    //Rotação
 
 void desenha_Robo(void){
-    //pernas
-    glBegin(GL_QUADS);
-        glColor3f(0.82, 0.70, 0.55);
-        glVertex2i(100+iX,0+iY);
-        glVertex2i(125+iX,0+iY);
-        glVertex2i(125+iX,80+iY);
-        glVertex2i(100+iX,80+iY);
-    glEnd();
-    glBegin(GL_QUADS);
-        glColor3f(0.82, 0.70, 0.55);
-        glVertex2i(135+iX,0+iY);
-        glVertex2i(160+iX,0+iY);
-        glVertex2i(160+iX,80+iY);
-        glVertex2i(135+iX,80+iY);
-    glEnd();
-
     //corpo
     glBegin(GL_QUADS);
         glColor3f(0.82, 0.70, 0.55);
-        glVertex2i(80+iX,80+iY);
-        glVertex2i(180+iX,80+iY);
-        glVertex2i(180+iX,210+iY);
-        glVertex2i(80+iX,210+iY);
+        glVertex2i(80,80);
+        glVertex2i(180,80);
+        glVertex2i(180,210);
+        glVertex2i(80,210);
     glEnd();
 
     //cabeça
     glBegin(GL_QUADS);
         glColor3f(0.82, 0.70, 0.55);
-        glVertex2i(95+iX,215+iY);
-        glVertex2i(165+iX,215+iY);
-        glVertex2i(165+iX,285+iY);
-        glVertex2i(95+iX,285+iY);
+        glVertex2i(95,215);
+        glVertex2i(165,215);
+        glVertex2i(165,285);
+        glVertex2i(95,285);
     glEnd();
 
     //braço
     glBegin(GL_QUADS);
         glColor3f(0.80, 0.36, 0.36);
-        glVertex2i(181+iX,210+iY);
-        glVertex2i(206+iX,210+iY);
-        glVertex2i(206+iX,155+iY);
-        glVertex2i(181+iX,155+iY);
+        glVertex2i(181,210);
+        glVertex2i(206,210);
+        glVertex2i(206,155);
+        glVertex2i(181,155);
     glEnd();
 
     //antebraço
     glBegin(GL_QUADS);
         glColor3f(0.74, 0.56, 0.56);
-        glVertex2i(181+iX,156+iY);
-        glVertex2i(206+iX,156+iY);
-        glVertex2i(206+iX,106+iY);
-        glVertex2i(181+iX,106+iY);
+        glVertex2i(181,156);
+        glVertex2i(206,156);
+        glVertex2i(206,106);
+        glVertex2i(181,106);
     glEnd();
+}
+
+void normalKey(unsigned char key, int x, int y){
+    switch(key){
+        //'a' para aumentar
+        case 'a':
+        case 'A':
+            sX = 1.5;
+            sY = 1.5;
+            glMatrixMode(GL_MODELVIEW);
+            glLoadIdentity();
+            break;
+
+        //'d' para diminuir
+        case 'd':
+        case 'D':
+            sX = 0.5;
+            sY = 0.5;
+            glMatrixMode(GL_MODELVIEW);
+            glLoadIdentity();
+            break;
+
+        default:
+            break;
+    }
 }
 
 /*Função para gerenciar as setas*/
 void specialKey(int tecla, int x, int y){
     switch (tecla){
         case GLUT_KEY_UP:
-            iY++;
+            tY++;
             glMatrixMode(GL_MODELVIEW);
             glLoadIdentity();
             break;
         case GLUT_KEY_DOWN:
-            iY--;
+            tY--;
             glMatrixMode(GL_MODELVIEW);
             glLoadIdentity();
             break;
         case GLUT_KEY_LEFT:
-            iX--;
+            tX--;
             glMatrixMode(GL_MODELVIEW);
             glLoadIdentity();
             break;
         case GLUT_KEY_RIGHT:
-            iX++;
+            tX++;
             glMatrixMode(GL_MODELVIEW);
             glLoadIdentity();
             break;
@@ -101,7 +112,8 @@ void Desenha(void){
 
 	/* Limpa a janela de visualização com a cor de fundo especificada */
 	glClear(GL_COLOR_BUFFER_BIT);
-    glTranslated(iX,iY,0);
+    glTranslated(tX,tY,0);
+    glScalef(sX,sY,1.0);
     desenha_Robo();
 
 	/* Executa os comandos OpenGL */
@@ -126,6 +138,7 @@ int main(int argc, char **argv){
 	glutInitWindowPosition (100, 100);
 	glutCreateWindow("Transformacoes");
     glutDisplayFunc(Desenha);
+    glutKeyboardFunc(normalKey);
     glutSpecialFunc(specialKey);
     Inicializa();
 	glutMainLoop();
