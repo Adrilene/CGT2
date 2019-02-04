@@ -9,9 +9,10 @@ using namespace std;
 //globais
 int tX = 0, tY = 0;    //translação
 float sXY = 1.0;   //Escala
-int rX = 0, rY = 0;    //Rotação
+float rA = 0.0;    //Ângulo de Rotação
+bool rotate = false;   //flag para indicar se haverá rotação
 
-void desenha_Robo(void){
+void desenhaCorpo(void){
     //corpo
     glBegin(GL_QUADS);
         glColor3f(0.82, 0.70, 0.55);
@@ -29,8 +30,9 @@ void desenha_Robo(void){
         glVertex2i(165,285);
         glVertex2i(95,285);
     glEnd();
+}
 
-    //braço
+void desenhaBraco(){
     glBegin(GL_QUADS);
         glColor3f(0.80, 0.36, 0.36);
         glVertex2i(181,210);
@@ -38,8 +40,9 @@ void desenha_Robo(void){
         glVertex2i(206,155);
         glVertex2i(181,155);
     glEnd();
+}
 
-    //antebraço
+void desenhaAntebraco(){
     glBegin(GL_QUADS);
         glColor3f(0.74, 0.56, 0.56);
         glVertex2i(181,156);
@@ -63,6 +66,12 @@ void normalKey(unsigned char key, int x, int y){
             glutPostRedisplay();
             break;
 
+        //'r' para rotacionar o braço e o antebraço
+        case 'r':
+            rA += 10.0;
+            rotate = true;
+            glutPostRedisplay();
+            break;
         default:
             break;
     }
@@ -72,22 +81,22 @@ void normalKey(unsigned char key, int x, int y){
 void specialKey(int key, int x, int y){
     switch (key){
         case GLUT_KEY_UP:
-            tY++;
+            tY+=2;
             glMatrixMode(GL_MODELVIEW);
             glLoadIdentity();
             break;
         case GLUT_KEY_DOWN:
-            tY--;
+            tY-=2;
             glMatrixMode(GL_MODELVIEW);
             glLoadIdentity();
             break;
         case GLUT_KEY_LEFT:
-            tX--;
+            tX-=2;
             glMatrixMode(GL_MODELVIEW);
             glLoadIdentity();
             break;
         case GLUT_KEY_RIGHT:
-            tX++;
+            tX+=2;
             glMatrixMode(GL_MODELVIEW);
             glLoadIdentity();
             break;
@@ -108,8 +117,22 @@ void Desenha(void){
 	glClear(GL_COLOR_BUFFER_BIT);
     glTranslated(tX,tY,0);
     glScalef(sXY,sXY,1.0);
-    desenha_Robo();
+    desenhaCorpo();   //desenha cabeça e tronco
 
+    glPushMatrix();
+    if(rotate == true){
+    
+        //181,210
+        glTranslatef(-168.5,-210.0,0.0);
+       // glRotatef(rA,0.0,0.0,1.0);
+        //glTranslatef(181.0,210.0,0.0);
+        rotate = false;
+    }
+    desenhaBraco();
+    desenhaAntebraco();
+
+
+    glPopMatrix();
 	/* Executa os comandos OpenGL */
 	glFlush();
 }
