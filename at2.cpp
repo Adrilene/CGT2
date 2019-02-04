@@ -8,7 +8,7 @@ using namespace std;
 
 //globais
 int tX = 0, tY = 0;    //translação
-float sX = 1.0, sY = 1.0;   //Escala
+float sXY = 1.0;   //Escala
 int rX = 0, rY = 0;    //Rotação
 
 void desenha_Robo(void){
@@ -53,20 +53,14 @@ void normalKey(unsigned char key, int x, int y){
     switch(key){
         //'a' para aumentar
         case 'a':
-        case 'A':
-            sX = 1.5;
-            sY = 1.5;
-            glMatrixMode(GL_MODELVIEW);
-            glLoadIdentity();
+            sXY += 0.2;
+            glutPostRedisplay();
             break;
 
         //'d' para diminuir
         case 'd':
-        case 'D':
-            sX = 0.5;
-            sY = 0.5;
-            glMatrixMode(GL_MODELVIEW);
-            glLoadIdentity();
+            sXY -= 0.2;
+            glutPostRedisplay();
             break;
 
         default:
@@ -75,8 +69,8 @@ void normalKey(unsigned char key, int x, int y){
 }
 
 /*Função para gerenciar as setas*/
-void specialKey(int tecla, int x, int y){
-    switch (tecla){
+void specialKey(int key, int x, int y){
+    switch (key){
         case GLUT_KEY_UP:
             tY++;
             glMatrixMode(GL_MODELVIEW);
@@ -113,7 +107,7 @@ void Desenha(void){
 	/* Limpa a janela de visualização com a cor de fundo especificada */
 	glClear(GL_COLOR_BUFFER_BIT);
     glTranslated(tX,tY,0);
-    glScalef(sX,sY,1.0);
+    glScalef(sXY,sXY,1.0);
     desenha_Robo();
 
 	/* Executa os comandos OpenGL */
