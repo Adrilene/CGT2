@@ -9,8 +9,8 @@ using namespace std;
 //globais
 int tX = 0, tY = 0;    //translação
 float sXY = 1.0;   //Escala
-float rA = 0.0;    //Ângulo de Rotação
-bool rotate = false;   //flag para indicar se haverá rotação
+float rAa = 0.0, rAb;    //Ângulo de Rotação antibraço e braço
+bool rotateB = false, rotateA = false;   //flag para indicar se haverá rotação para Braço e antibraço
 
 void desenhaCorpo(void){
     //corpo
@@ -68,8 +68,15 @@ void normalKey(unsigned char key, int x, int y){
 
         //'r' para rotacionar o braço e o antebraço
         case 'r':
-            rA += 10.0;
-            rotate = true;
+            rAb += 10.0;
+            rotateB = true;
+            glutPostRedisplay();
+            break;
+
+        //'t' para rotacionar o antibraço
+        case 't':
+            rAa += 10.0;
+            rotateA = true;
             glutPostRedisplay();
             break;
         default:
@@ -120,18 +127,28 @@ void Desenha(void){
     desenhaCorpo();   //desenha cabeça e tronco
 
     glPushMatrix();
-    if(rotate == true){
+    if(rotateB == true){
     
-        //181,210
-        glTranslatef(-168.5,-210.0,0.0);
-       // glRotatef(rA,0.0,0.0,1.0);
-        //glTranslatef(181.0,210.0,0.0);
-        rotate = false;
+        glPushMatrix();
+		glTranslatef(181,210, 0.0);
+		glRotatef(rAb, 0.0, 0.0, 1.0);
+		glTranslatef(-181, -210.0, 0.0);
+
+        rotateB = false;
     }
-    desenhaBraco();
+    desenhaBraco(); 
+    if(rotateA == true){
+        
+        glPushMatrix();
+		glTranslatef(206.0,256.0, 0.0);
+		glRotatef(rAa, 0.0, 0.0, 1.0);
+		glTranslatef(-206,-256.0,0.0);
+
+        rotateA = false;
+    }
     desenhaAntebraco();
 
-
+    glPopMatrix(); 
     glPopMatrix();
 	/* Executa os comandos OpenGL */
 	glFlush();
