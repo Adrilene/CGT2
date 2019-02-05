@@ -10,7 +10,7 @@ using namespace std;
 int tX = 0, tY = 0;    //translação
 float sXY = 1.0;   //Escala
 float rAa = 0.0, rAb;    //Ângulo de Rotação antibraço e braço
-bool rotateB = false, rotateA = false;   //flag para indicar se haverá rotação para Braço e antibraço
+bool rotateB = false, limiteB = false, rotateA = false, limiteA = false;   //flag para indicar se haverá rotação para Braço e antibraço
 
 void desenhaCorpo(void){
     //corpo
@@ -68,14 +68,32 @@ void normalKey(unsigned char key, int x, int y){
 
         //'r' para rotacionar o braço e o antebraço
         case 'r':
-            rAb += 10.0;
+            //se chegar no limite, braço volta
+            if (rAb >= 120){
+                limiteB = true;
+            }
+            else if (rAb == 0){
+                limiteB = false;
+            }
+            if(limiteB){rAb -= 10.0;}
+            else{rAb += 10.0;}
+            
             rotateB = true;
             glutPostRedisplay();
+            
             break;
 
         //'t' para rotacionar o antibraço
         case 't':
-            rAa += 10.0;
+            if (rAa >= 120){
+                limiteA = true;
+            }
+            else if (rAa == 0){
+                limiteA = false;
+            }
+            if(limiteA){rAa -= 10.0;}
+            else{rAa += 10.0;}
+
             rotateA = true;
             glutPostRedisplay();
             break;
@@ -89,23 +107,15 @@ void specialKey(int key, int x, int y){
     switch (key){
         case GLUT_KEY_UP:
             tY+=2;
-            glMatrixMode(GL_MODELVIEW);
-            glLoadIdentity();
             break;
         case GLUT_KEY_DOWN:
             tY-=2;
-            glMatrixMode(GL_MODELVIEW);
-            glLoadIdentity();
             break;
         case GLUT_KEY_LEFT:
             tX-=2;
-            glMatrixMode(GL_MODELVIEW);
-            glLoadIdentity();
             break;
         case GLUT_KEY_RIGHT:
             tX+=2;
-            glMatrixMode(GL_MODELVIEW);
-            glLoadIdentity();
             break;
         default:
             break;
@@ -122,14 +132,13 @@ void Desenha(void){
 
 	/* Limpa a janela de visualização com a cor de fundo especificada */
 	glClear(GL_COLOR_BUFFER_BIT);
+    glPushMatrix();
     glTranslated(tX,tY,0);
     glScalef(sXY,sXY,1.0);
     desenhaCorpo();   //desenha cabeça e tronco
 
-    glPushMatrix();
     if(rotateB == true){
     
-        glPushMatrix();
 		glTranslatef(181,210, 0.0);
 		glRotatef(rAb, 0.0, 0.0, 1.0);
 		glTranslatef(-181, -210.0, 0.0);
@@ -138,17 +147,14 @@ void Desenha(void){
     }
     desenhaBraco(); 
     if(rotateA == true){
-        
-        glPushMatrix();
-		glTranslatef(206.0,256.0, 0.0);
+		glTranslatef(206.0,156.0, 0.0);
 		glRotatef(rAa, 0.0, 0.0, 1.0);
-		glTranslatef(-206,-256.0,0.0);
+		glTranslatef(-206,-156.0,0.0);
 
         rotateA = false;
     }
     desenhaAntebraco();
 
-    glPopMatrix(); 
     glPopMatrix();
 	/* Executa os comandos OpenGL */
 	glFlush();
