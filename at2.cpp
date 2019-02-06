@@ -10,7 +10,7 @@ using namespace std;
 int tX = 0, tY = 0;    //translação
 float sXY = 1.0;   //Escala
 float rAa = 0.0, rAb;    //Ângulo de Rotação antibraço e braço
-bool rotateB = false, limiteB = false, rotateA = false, limiteA = false;   //flag para indicar se haverá rotação para Braço e antibraço
+bool limiteB = false, limiteA = false;   //flag para indicar se haverá rotação para Braço e antibraço
 
 void desenhaCorpo(void){
     //corpo
@@ -43,6 +43,7 @@ void desenhaBraco(){
 }
 
 void desenhaAntebraco(){
+    
     glBegin(GL_QUADS);
         glColor3f(0.74, 0.56, 0.56);
         glVertex2i(181,156);
@@ -78,7 +79,6 @@ void normalKey(unsigned char key, int x, int y){
             if(limiteB){rAb -= 10.0;}
             else{rAb += 10.0;}
             
-            rotateB = true;
             glutPostRedisplay();
             
             break;
@@ -94,7 +94,6 @@ void normalKey(unsigned char key, int x, int y){
             if(limiteA){rAa -= 10.0;}
             else{rAa += 10.0;}
 
-            rotateA = true;
             glutPostRedisplay();
             break;
         default:
@@ -137,22 +136,15 @@ void Desenha(void){
     glScalef(sXY,sXY,1.0);
     desenhaCorpo();   //desenha cabeça e tronco
 
-    if(rotateB == true){
-    
-		glTranslatef(181,210, 0.0);
-		glRotatef(rAb, 0.0, 0.0, 1.0);
-		glTranslatef(-181, -210.0, 0.0);
-
-        rotateB = false;
-    }
+    glTranslatef(193.5,210, 0.0);
+    glRotatef(rAb, 0.0, 0.0, 1.0);
+    glTranslatef(-193.5, -210.0, 0.0);
     desenhaBraco(); 
-    if(rotateA == true){
-		glTranslatef(206.0,156.0, 0.0);
-		glRotatef(rAa, 0.0, 0.0, 1.0);
-		glTranslatef(-206,-156.0,0.0);
+   
+    glTranslatef(193.5,156.0, 0.0);
+    glRotatef(rAa, 0.0, 0.0, 1.0);
+    glTranslatef(-193.5,-156.0,0.0);
 
-        rotateA = false;
-    }
     desenhaAntebraco();
 
     glPopMatrix();
