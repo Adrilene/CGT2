@@ -55,6 +55,12 @@ void desenhaAntebraco(){
     glEnd();
 }
 
+void desenhaTexto(void *font, char *string){
+    
+    while(*string)
+        glutStrokeCharacter(GLUT_STROKE_ROMAN, *string++);
+}
+
 void normalKey(unsigned char key, int x, int y){
     switch(key){
         //'a' para aumentar
@@ -89,7 +95,7 @@ void normalKey(unsigned char key, int x, int y){
 
         //'t' para rotacionar o antibraço
         case 't':
-            if (rAa >= 145){
+            if (rAa >= 130){
                 limiteA = true;
             }
             else if (rAa == 0){
@@ -139,6 +145,19 @@ void Desenha(void){
     glTranslated(tX,tY,0);
     glScalef(sXY,sXY,1.0);
     desenhaCorpo();   //desenha cabeça e tronco
+
+    //desenha sorriso
+    glPushMatrix();
+    glColor3f(0.0,0.0,0.0);
+    glLineWidth(2);
+    glTranslatef(107.0,265.0,0.0);
+    glScalef(0.3,0.3,1.0);
+    desenhaTexto(GLUT_STROKE_ROMAN, ". .");
+    glTranslatef(-117.0,-50.0,0.0);
+    glRotatef(270.0, 0.0, 0.0, 1.0);
+    desenhaTexto(GLUT_STROKE_ROMAN, ")");
+    glPopMatrix();
+
 
     glTranslatef(193.5,210, 0.0);
     glRotatef(rAb, 0.0, 0.0, 1.0);
