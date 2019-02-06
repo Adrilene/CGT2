@@ -12,6 +12,8 @@ float sXY = 1.0;   //Escala
 float rAa = 0.0, rAb;    //Ângulo de Rotação antibraço e braço
 bool limiteB = false, limiteA = false;   //flag para indicar se haverá rotação para Braço e antibraço
 
+const double eps = 1e-6;
+
 void desenhaCorpo(void){
     //corpo
     glBegin(GL_QUADS);
@@ -63,14 +65,16 @@ void normalKey(unsigned char key, int x, int y){
 
         //'d' para diminuir
         case 'd':
-            sXY -= 0.2;
+            if(sXY-0.2 > eps){
+                sXY -= 0.2;   
+            }
             glutPostRedisplay();
             break;
 
         //'r' para rotacionar o braço e o antebraço
         case 'r':
             //se chegar no limite, braço volta
-            if (rAb >= 120){
+            if (rAb >= 180){
                 limiteB = true;
             }
             else if (rAb == 0){
@@ -85,7 +89,7 @@ void normalKey(unsigned char key, int x, int y){
 
         //'t' para rotacionar o antibraço
         case 't':
-            if (rAa >= 120){
+            if (rAa >= 145){
                 limiteA = true;
             }
             else if (rAa == 0){
